@@ -15,7 +15,7 @@ pillow==2.9.0
 SQLAlchemy==0.9.7
 WTForms==2.0.1
 Werkzeug==0.9.6
-alembic==0.6.7
+alembic==0.7.0
 argparse==1.2.1
 backports.ssl-match-hostname==3.4.0.2
 gevent==1.0.2

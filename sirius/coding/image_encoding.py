@@ -107,12 +107,13 @@ def html_to_png(html):
     </body></html>
     """
     from selenium import webdriver
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')
+    options.add_argument('--test-type')
+    options.add_argument('--ignore-certificate-errors')
     try:
-        caps = {'acceptSslCerts': True}
-        driver = webdriver.PhantomJS(
-            'phantomjs', desired_capabilities=caps,
-            service_args=['--ignore-ssl-errors=true', '--ssl-protocol=any'])
-        driver.set_window_size(384, 5)
+        driver = webdriver.Chrome(chrome_options=options)
+        driver.set_window_size(384, 384)
 
         # note that the .html suffix is required to make phantomjs
         # pick up the mime-type and render correctly.
