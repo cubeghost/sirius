@@ -17,4 +17,4 @@ def default_template(raw_html, from_name):
         raw_html=raw_html,
         date=datetime.datetime.now(),
         from_name=from_name
-    )
+    ).encode('utf-8')

@@ -24,7 +24,7 @@ def randomly_change_personality():
     # system.
     assert flask.current_app.config['DEBUG'], "Debug not enabled"
 
-    im = image_encoding.threshold(Image.open('./tests/normalface.png'))
+    im = image_encoding.convert_to_1bit(Image.open('./tests/normalface.png'))
 
     msg = messages.SetPersonality(
         device_address='000d6f000273ce0b',
@@ -34,13 +34,13 @@ def randomly_change_personality():
         cannot_see_internet_pixels=image_encoding.default_pipeline('Cannot see internet'),
     )
     success, next_print_id = protocol_loop.send_message(
-        '000d6f000273ce0b', msg)
+        '000d6f0002743f58', msg)
 
     if success:
         flask.flash('Sent your message to the printer!')
     else:
         flask.flash(("Could not send message because the "
-                     "printer {} is offline.").format('000d6f000273ce0b'),
+                     "printer {} is offline.").format('000d6f0002743f58'),
                     'error')
 
     return flask.redirect('/admin')

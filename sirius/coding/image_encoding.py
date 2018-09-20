@@ -3,6 +3,8 @@ from itertools import groupby
 import struct
 import io
 import tempfile
+import time
+
 
 WHITE = '\xff'
 BLACK = '\x00'
@@ -56,9 +58,8 @@ def rle(lengths):
                     yield remainder
 
 
-def crop_384(im):
-    w, h = im.size
-    return im.crop((0, 0, 384, min(h, 10000)))
+def crop(im, width, height):
+    return im.crop((0, 0, width * 2, min(height * 2, 10000))).resize((width, height))
 
 
 def convert_to_1bit(im):
@@ -113,7 +114,6 @@ def html_to_png(html):
     options.add_argument('--ignore-certificate-errors')
     try:
         driver = webdriver.Chrome(chrome_options=options)
-        driver.set_window_size(384, 384)
 
         # note that the .html suffix is required to make phantomjs
         # pick up the mime-type and render correctly.
@@ -124,9 +124,12 @@ def html_to_png(html):
                 f.write(html)
             f.flush()
             driver.get('file://' + f.name)
+            driver.maximize_window()
+            width = driver.execute_script('return document.body.scrollWidth')
+            height = driver.execute_script('return document.body.scrollHeight')
             data = io.BytesIO(driver.get_screenshot_as_png())
 
-        return data
+        return data, width, height
     finally:
         if driver:
             driver.quit()
@@ -134,11 +137,11 @@ def html_to_png(html):
 
 def default_pipeline(html):
     """Encode HTML into an RLE image."""
-    data = html_to_png(html)
-    return png_pipeline(data)
+    data, width, height = html_to_png(html)
+    return png_pipeline(data, width, height)
 
 
-def png_pipeline(png_data):
+def png_pipeline(png_data, width, height):
     image = Image.open(png_data)
-    image = crop_384(image)
+    image = crop(image, width, height)
     return convert_to_1bit(image)

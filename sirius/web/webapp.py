@@ -27,6 +27,7 @@ from sirius.web import twitter
 from sirius.web import login
 from sirius.web import admin
 from sirius.web import printer_print
+from sirius.web import printer_personality
 from sirius.web import printer_overview
 from sirius.web import external_api
 from sirius.web import print_key_api
@@ -55,6 +56,7 @@ def create_app(config_name):
     app.register_blueprint(twitter.blueprint)
     app.register_blueprint(printer_overview.blueprint)
     app.register_blueprint(printer_print.blueprint)
+    app.register_blueprint(printer_personality.blueprint)
     app.register_blueprint(external_api.blueprint)
     app.register_blueprint(admin.blueprint)
     app.register_blueprint(print_key_api.blueprint)
