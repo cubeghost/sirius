@@ -103,7 +103,7 @@ class Printer(db.Model):
     class OfflineError(Exception):
         pass
 
-    def print_html(self, html, from_name):
+    def print_html(self, html, from_name, face=True):
         from sirius.protocol import protocol_loop
         from sirius.protocol import messages
         from sirius.coding import image_encoding
@@ -115,10 +115,17 @@ class Printer(db.Model):
             templating.default_template(html, from_name=from_name)
         )
 
-        hardware_message = messages.SetDeliveryAndPrint(
-            device_address=self.device_address,
-            pixels=pixels,
-        )
+        hardware_message = None
+        if face:
+            hardware_message = messages.SetDeliveryAndPrint(
+                device_address=self.device_address,
+                pixels=pixels,
+            )
+        else:
+            hardware_message = messages.SetDeliveryAndPrintNoFace(
+                device_address=self.device_address,
+                pixels=pixels,
+            )
 
         # If a printer is "offline" then we won't find the printer
         # connected and success will be false.

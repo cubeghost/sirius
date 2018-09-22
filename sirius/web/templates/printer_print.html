@@ -33,6 +33,20 @@
 			{% endif %}
 			{{ form.message(class="form-control") }}
 		</div>
+
+		<div class="{% if form.print_face.errors %}has-error{% endif%}">
+			{% if form.print_face.errors %}
+			<ul>
+			{% for error in form.print_face.errors %}
+			<li>{{ error }}</li>
+			{% endfor %}
+			</ul>
+			{% endif %}
+      <label class="form-control">
+        {{ form.print_face() }} Print face?
+      </label>
+		</div>
+
 		<button type="submit" class="btn btn-primary">Print now</button>
 		<button class="btn" type="button" id="preview">Preview</button>
 	</form>

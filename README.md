@@ -68,7 +68,7 @@ If you want to print messages from your application, you can use the external AP
 
 ```bash
 curl \
-  --data '{"message": "<h1>hello friend!</h1>"}' \
+  --data '{"message": "<h1>hello friend!</h1>", "print_face": true}' \
   http://127.0.0.1:5000/external_api/v1/printer/1/print_html?api_key=<key>
 ```
 

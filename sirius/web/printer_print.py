@@ -25,6 +25,10 @@ class PrintForm(flask_wtf.Form):
         coerce=int,
         validators=[wtforms.validators.DataRequired()],
     )
+    print_face = wtforms.BooleanField(
+        'Print face?',
+        validators=[],
+    )
     message = wtforms.TextAreaField(
         'Message',
         validators=[wtforms.validators.DataRequired()],
@@ -64,12 +68,14 @@ def printer_print(printer_id):
     # Set default printer on get
     if flask.request.method != 'POST':
         form.target_printer.data = printer.id
+        form.print_face.data = True
 
     if form.validate_on_submit():
         try:
             printer.print_html(
                 html=form.message.data,
                 from_name=login.current_user.username,
+                face=form.print_face.data,
             )
             flask.flash('Sent your message to the printer!')
         except hardware.Printer.OfflineError:

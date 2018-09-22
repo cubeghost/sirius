@@ -40,6 +40,11 @@
   font-family: 'Univers LT Std';
   overflow: hidden;
 }
+#receipt .timestamp {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.7em;
+  margin-bottom: 2em;
+}
 #receipt h1 {
   font-family: 'Univers';
   font-size: 42px;
@@ -96,20 +101,38 @@
   font-size: 1.6em;
   line-height: 1.2em;
 }
-#receipt .comicPanel {
-  overflow: hidden;
+#receipt .theLastDeck {
+  text-align: center;
+  margin-top: -1em;
+}
+#receipt .theLastDeck img {
+  width: 280px;
+  height: 490px;
+  object-fit: cover;
+  object-position: 50% 50%;
 }
     </style>
   </head>
   <body>
     <div id="receipt">
+      <div class="timestamp">{{ timestamp.strftime('%F %H:%M') }}</div>
       <h1>deep web transmissions</h1>
 
       <hr />
 
-      <h4>@tiny_star_field</h4>
-      <pre class="tinyStarField">{{ tiny_star_field }}</pre>
+      <h6>@thelastdeck</h6>
+      <h4>it writhes; admire</h4>
+      <div class="theLastDeck">
+        <img src="{{ the_last_deck }}" />
+      </div>
+
       <hr />
+
+      <h4>@tiny_star_field</h4>
+      <pre class="tinyStarField">{{ tiny_star_field_lines|join('\n') }}</pre>
+
+      <hr />
+
       <div style="overflow: hidden; height: 550px;">
         <img
           width="670"
@@ -118,10 +141,13 @@
         />
       </div>
       <center><h4>&nbsp;&nbsp;&nbsp;&nbsp;lotus</h4></center>
+
       <hr />
+
       <h6>@10_print_chr</h6>
       <h4>10 PRNT CHR$</h4>
-      <pre class="tenPrintChr">{{ ten_print_chr }}</pre>
+      <pre class="tenPrintChr">{{ ten_print_chr_lines|join('\n') }}</pre>
+
     </div>
   </body>
 </html>

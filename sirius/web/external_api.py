@@ -42,13 +42,18 @@ def print_html(printer_id):
     task = json.loads(request.data)
     if not task['message']:
         flask.abort(500)
-
-
+    if task['print_face'] is not False:
+        task['print_face'] = True
 
     response = {}
-    if success:
+    try:
+        printer.print_html(
+            html=task['message'],
+            from_name=login.current_user.username,
+            face=task['print_face'],
+        )
         response['status'] = 'Sent your message to the printer!'
-    else:
+    except hardware.Printer.OfflineError:
         response['status'] = ("Could not send message because the "
                      "printer {} is offline.").format(printer.name)
 
