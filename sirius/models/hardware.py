@@ -151,7 +151,7 @@ class Printer(db.Model):
         if not success:
             raise Printer.OfflineError()
 
-    def change_face(self, from_name='', face='default'):
+    def print_deep_web(self, from_name=''):
         from sirius.protocol import protocol_loop
         from sirius.protocol import messages
         from sirius.coding import image_encoding
@@ -159,16 +159,13 @@ class Printer(db.Model):
         from sirius import stats
         from sirius.models import messages as model_messages
 
-        face_pixels = image_encoding.convert_to_1bit(
-            Image.open('./faces/{}.png'.format(face))
+        pixels = image_encoding.default_pipeline(
+            templating.deep_web_template()
         )
 
-        hardware_message = messages.SetPersonality(
+        hardware_message = messages.SetDeliveryAndPrint(
             device_address=self.device_address,
-            face_pixels=face_pixels,
-            nothing_to_print_pixels=image_encoding.default_pipeline('Nothing to print'),
-            cannot_see_bridge_pixels=image_encoding.default_pipeline('Cannot see bridge'),
-            cannot_see_internet_pixels=image_encoding.default_pipeline('Cannot see internet'),
+            pixels=pixels,
         )
 
         # If a printer is "offline" then we won't find the printer
@@ -185,7 +182,7 @@ class Printer(db.Model):
 
         # Store the same message in the database.
         png = io.BytesIO()
-        face_pixels.save(png, "PNG")
+        pixels.save(png, "PNG")
         model_message = model_messages.Message(
             print_id=next_print_id,
             pixels=bytearray(png.getvalue()),
@@ -198,6 +195,75 @@ class Printer(db.Model):
             model_message.failure_message = 'Printer offline'
             model_message.response_timestamp = datetime.datetime.utcnow()
         db.session.add(model_message)
+
+        if not success:
+            raise Printer.OfflineError()
+
+    def change_face(self, message=None, from_name='', face='default'):
+        from sirius.protocol import protocol_loop
+        from sirius.protocol import messages
+        from sirius.coding import image_encoding
+        from sirius.coding import templating
+        from sirius import stats
+        from sirius.models import messages as model_messages
+
+        # TODO we dont need to generate these every time lmao
+        nothing_to_print_pixels = image_encoding.default_pipeline('Nothing to print')
+        cannot_see_bridge_pixels = image_encoding.default_pipeline('Cannot see bridge')
+        cannot_see_internet_pixels = image_encoding.default_pipeline('Cannot see internet')
+
+        face_pixels = image_encoding.convert_to_1bit(
+            Image.open('./faces/{}.png'.format(face))
+        )
+
+        hardware_message = None
+        if bool(message):
+            hardware_message = messages.SetPersonalityWithMessage(
+                device_address=self.device_address,
+                face_pixels=face_pixels,
+                message_pixels=image_encoding.default_pipeline(
+                    templating.default_template(message, from_name=from_name)
+                ),
+                nothing_to_print_pixels=nothing_to_print_pixels,
+                cannot_see_bridge_pixels=cannot_see_bridge_pixels,
+                cannot_see_internet_pixels=cannot_see_internet_pixels,
+            )
+        else:
+            hardware_message = messages.SetPersonality(
+                device_address=self.device_address,
+                face_pixels=face_pixels,
+                nothing_to_print_pixels=nothing_to_print_pixels,
+                cannot_see_bridge_pixels=cannot_see_bridge_pixels,
+                cannot_see_internet_pixels=cannot_see_internet_pixels,
+            )
+
+        # If a printer is "offline" then we won't find the printer
+        # connected and success will be false.
+        success, next_print_id = protocol_loop.send_message(
+            self.device_address,
+            hardware_message
+        )
+
+        if success:
+            stats.inc('printer.print.ok')
+        else:
+            stats.inc('printer.print.offline')
+
+        if bool(message):
+            # Store the same message in the database.
+            png = io.BytesIO()
+            face_pixels.save(png, "PNG")
+            model_message = model_messages.Message(
+                print_id=next_print_id,
+                pixels=bytearray(png.getvalue()),
+                sender_name=from_name,
+                target_printer=self,
+            )
+            # We know immediately if the printer wasn't online.
+            if not success:
+                model_message.failure_message = 'Printer offline'
+                model_message.response_timestamp = datetime.datetime.utcnow()
+            db.session.add(model_message)
 
         if not success:
             raise Printer.OfflineError()

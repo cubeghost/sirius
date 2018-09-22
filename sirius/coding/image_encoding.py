@@ -111,6 +111,7 @@ def html_to_png(html):
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
     options.add_argument('--test-type')
+    options.add_argument('--disable-web-security')
     options.add_argument('--ignore-certificate-errors')
     try:
         driver = webdriver.Chrome(chrome_options=options)
@@ -125,9 +126,13 @@ def html_to_png(html):
             f.flush()
             driver.get('file://' + f.name)
             driver.maximize_window()
-            width = driver.execute_script('return document.body.scrollWidth')
-            height = driver.execute_script('return document.body.scrollHeight')
-            data = io.BytesIO(driver.get_screenshot_as_png())
+            width = driver.execute_script('return document.body.offsetWidth')
+            height = driver.execute_script('return document.body.offsetHeight')
+            if width > 364:
+                print 'WARNING: image width greater than 364px'
+            # you need the latest chromedriver (>=2.42)
+            body = driver.find_element_by_tag_name('body')
+            data = io.BytesIO(body.screenshot_as_png)
 
         return data, width, height
     finally:

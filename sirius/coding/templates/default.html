@@ -46,7 +46,7 @@
   </head>
   <body>
     <div class="header">
-      {{ date.strftime('%H:%M | %d-%b-%Y') }}{% if from_name %} | {{ from_name }}{% endif %}
+      {{ date.strftime('%H:%M | %d-%b-%Y') }}{% if from_name %} | @{{ from_name }}{% endif %}
     </div>
     {{ raw_html|safe }}
   </body>

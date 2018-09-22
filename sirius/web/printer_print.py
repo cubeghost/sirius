@@ -69,7 +69,7 @@ def printer_print(printer_id):
         try:
             printer.print_html(
                 html=form.message.data,
-                from_name='@' + login.current_user.username,
+                from_name=login.current_user.username,
             )
             flask.flash('Sent your message to the printer!')
         except hardware.Printer.OfflineError:
@@ -88,6 +88,36 @@ def printer_print(printer_id):
         form=form,
     )
 
+@login.login_required
+@blueprint.route('/printer/<int:printer_id>/print_deep_web', methods=['GET'])
+def print_deep_web(printer_id):
+    printer = hardware.Printer.query.get(printer_id)
+    if printer is None:
+        flask.abort(404)
+
+    # PERMISSIONS
+    # the printer must either belong to this user, or be
+    # owned by a friend
+    if printer.owner.id == login.current_user.id:
+        # fine
+        pass
+    else:
+        flask.abort(404)
+
+    try:
+        printer.print_deep_web(from_name=login.current_user.username)
+        flask.flash('Sent a Deep Web Transmission to the printer!')
+    except hardware.Printer.OfflineError:
+        flask.flash(
+            "Could not send message because the printer {} is offline.".format(printer.name),
+            'error'
+        )
+
+    return flask.redirect(flask.url_for(
+        'printer_overview.printer_overview',
+        printer_id=printer.id))
+
+
 
 @blueprint.route('/<int:user_id>/<username>/printer/<int:printer_id>/preview', methods=['POST'])
 @login.login_required
@@ -97,7 +127,7 @@ def preview(user_id, username, printer_id):
 
     message = flask.request.data.decode('utf-8')
     pixels = image_encoding.default_pipeline(
-        templating.default_template(message, from_name='@' + login.current_user.username))
+        templating.default_template(message, from_name=login.current_user.username))
     png = io.BytesIO()
     pixels.save(png, "PNG")
 

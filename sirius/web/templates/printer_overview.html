@@ -21,7 +21,13 @@
 		<p>
 			<a class="btn btn-default" href="{{
 							url_for('printer_print.printer_print',
-									printer_id=printer.id) }}">Send test message</a>
+									printer_id=printer.id) }}">Send message</a>
+			<a class="btn btn-default" href="{{
+							url_for('printer_personality.printer_personality',
+									printer_id=printer.id) }}">Set personality</a>
+			<a class="btn btn-default" href="{{
+							url_for('printer_print.print_deep_web',
+									printer_id=printer.id) }}">Send Deep Web Transmission</a>
 		</p>
 
 		<div class="spacer" style="height: 1em"></div>
@@ -33,7 +39,7 @@
 			Print Keys let you print using the <a href="https://itunes.apple.com/us/app/little-printers/id1393105914?ls=1&mt=8">Little Printers</a> app, or using our
 			simple API.
 		</p>
-		
+
 		{% if printer.print_keys.count() > 0 %}
 		<table class="table print-keys-table">
 			<thead>
@@ -70,7 +76,7 @@
 						                         printer_id=printer.id,
 						                         print_key_id=print_key.id) }}">
 							Are you sure?
-							<button class="btn btn-link text-danger" 
+							<button class="btn btn-link text-danger"
 							        style="vertical-align: baseline;"
 							        type="submit">
 								Delete
@@ -117,7 +123,7 @@
 			</div>
 		</div>
 		{% endfor %}
-		
+
 		{% endif %}
 
 	</div>

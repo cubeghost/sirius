@@ -30,6 +30,10 @@ class PrintForm(flask_wtf.Form):
         coerce=unicode,
         validators=[wtforms.validators.DataRequired()],
     )
+    message = wtforms.TextAreaField(
+        'Message (optional)',
+        validators=[],
+    )
 
 
 @login.login_required
@@ -56,6 +60,7 @@ def printer_personality(printer_id):
     form.target_printer.choices = choices
     form.face.choices = [
         ("default", "Default face"),
+        ("happy-long-hair-glasses", "Happy/long hair/glasses face"),
         ("barcode", "Barcode face"),
         ("normal", "\"Normal\" face"),
     ]
@@ -68,8 +73,9 @@ def printer_personality(printer_id):
     if form.validate_on_submit():
         try:
             printer.change_face(
-                from_name='@' + login.current_user.username,
+                from_name=login.current_user.username,
                 face=form.face.data,
+                message=form.message.data,
             )
             flask.flash('Sent personality to the printer!')
         except hardware.Printer.OfflineError:

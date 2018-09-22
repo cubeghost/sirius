@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: white;
+        overflow-x: hidden;
+        width: 384px;
+      }
+
+      body {
+        /*
+           first line must be white because of a bug in the image encoder,
+           that inverts the image if the first pixel is black
+        */
+        padding-top: 1px;
+      }
+      @font-face {
+        font-family: Univers;
+        src: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/2144/UniversLTStd-BlackEx.otf);
+        font-style: normal;
+        font-weight: 900;
+        font-stretch: expanded;
+      }
+      @font-face {
+        font-family: Univers;
+        src: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/2144/UniversLTStd-BoldEx.otf);
+        font-style: normal;
+        font-weight: 700;
+        font-stretch: expanded;
+      }
+
+
+#receipt {
+  width: 384px;
+  font-size: 24px;
+  font-family: 'Univers LT Std';
+  overflow: hidden;
+}
+#receipt h1 {
+  font-family: 'Univers';
+  font-size: 42px;
+  font-weight: 900;
+  font-stretch: expanded;
+  margin: 0;
+  line-height: 1em;
+  padding-bottom: 0.5em;
+}
+#receipt hr {
+  display: block;
+  border: 0;
+  margin-bottom: 2em;
+}
+#receipt hr:after {
+  content: '-----------------';
+  display: block;
+  font-size: 1.42em;
+  margin-top: -0.5em;
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: #999;
+  text-decoration-style: wavy;
+  transform-origin: bottom left;
+  transform: scale(2) translateX(0.05em);
+  overflow: hidden;
+}
+#receipt blockquote {
+  margin-left: 0.5em;
+  padding-left: 1em;
+  border-left: 4px solid #ccc;
+}
+#receipt h6 {
+  font-size: 0.7em;
+  font-family: 'Univers';
+  font-stretch: expanded;
+  margin: 0;
+  color: #999;
+}
+#receipt h4 {
+  font-family: 'Univers';
+  font-stretch: expanded;
+  font-weight: 700;
+}
+#receipt h6 + h4 {
+  margin-top: 0.2em;
+}
+#receipt .tinyStarField {
+  font-family: monospace;
+  font-size: 1.22em;
+}
+#receipt .tenPrintChr {
+  font-family: monospace;
+  font-size: 1.6em;
+  line-height: 1.2em;
+}
+#receipt .comicPanel {
+  overflow: hidden;
+}
+    </style>
+  </head>
+  <body>
+    <div id="receipt">
+      <h1>deep web transmissions</h1>
+
+      <hr />
+
+      <h4>@tiny_star_field</h4>
+      <pre class="tinyStarField">{{ tiny_star_field }}</pre>
+      <hr />
+      <div style="overflow: hidden; height: 550px;">
+        <img
+          width="670"
+          style="margin-top: -110px; margin-left: -135px;"
+          src="https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/lotus-flower-botanical-drawing-black-and-white-irina-sztukowski.jpg"
+        />
+      </div>
+      <center><h4>&nbsp;&nbsp;&nbsp;&nbsp;lotus</h4></center>
+      <hr />
+      <h6>@10_print_chr</h6>
+      <h4>10 PRNT CHR$</h4>
+      <pre class="tenPrintChr">{{ ten_print_chr }}</pre>
+    </div>
+  </body>
+</html>
