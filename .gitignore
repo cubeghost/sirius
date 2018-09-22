@@ -62,3 +62,6 @@ sirius/data.sqlite
 
 # Fake printer
 *.printer
+
+# Downloads
+chromedriver_*.zip
