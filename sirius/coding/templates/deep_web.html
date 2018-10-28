@@ -111,6 +111,12 @@
   object-fit: cover;
   object-position: 50% 50%;
 }
+#receipt .theLastDeck--first img {
+  object-position: 11.5% 50%;
+}
+#receipt .theLastDeck--last img {
+  object-position: 88.5% 50%;
+}
     </style>
   </head>
   <body>
@@ -121,19 +127,25 @@
       <hr />
 
       <h6>@thelastdeck</h6>
-      <h4>it writhes; admire</h4>
+      <h4 style="font-size: 0.9em;">The Pictorial Bot To The Tarot</h4>
       <div class="theLastDeck">
         <img src="{{ the_last_deck }}" />
       </div>
 
       <hr />
 
-      <h4>@tiny_star_field</h4>
-      <pre class="tinyStarField">{{ tiny_star_field_lines|join('\n') }}</pre>
+      <h6>@str_voyage</h6>
+      <h4>a strange voyage</h4>
+      <div class="aStrangeVoyage">{{ a_strange_voyage }}</div>
 
       <hr />
 
-      <div style="overflow: hidden; height: 550px;">
+      <h4>@tiny_star_field</h4>
+      <pre class="tinyStarField">{{ tiny_star_field }}</pre>
+
+      <hr />
+
+      <!-- <div style="overflow: hidden; height: 550px;">
         <img
           width="670"
           style="margin-top: -110px; margin-left: -135px;"
@@ -142,11 +154,11 @@
       </div>
       <center><h4>&nbsp;&nbsp;&nbsp;&nbsp;lotus</h4></center>
 
-      <hr />
+      <hr /> -->
 
       <h6>@10_print_chr</h6>
       <h4>10 PRNT CHR$</h4>
-      <pre class="tenPrintChr">{{ ten_print_chr_lines|join('\n') }}</pre>
+      <pre class="tenPrintChr">{{ ten_print_chr }}</pre>
 
     </div>
   </body>

@@ -28,7 +28,6 @@ twitter = oauth_app.remote_app(
     consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET'),
 )
 
-
 @twitter.tokengetter
 def get_twitter_token(token=None):
     return flask.session.get('twitter_token')
@@ -133,3 +132,17 @@ def get_friends(user):
             ))
 
     return sorted(friends)
+
+
+
+def get_latest_tweet(username):
+    user_token, user_token_secret = flask.session.get('twitter_token')
+
+    api = twitter_api.Twitter(auth=twitter_api.OAuth(
+        user_token,
+        user_token_secret,
+        twitter.consumer_key,
+        twitter.consumer_secret,
+    ))
+
+    return api.statuses.user_timeline(screen_name=username, count=1)[0]

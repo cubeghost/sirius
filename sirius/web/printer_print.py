@@ -125,6 +125,13 @@ def print_deep_web(printer_id):
 
 
 
+@blueprint.route('/printer/preview_deep_web', methods=['GET'])
+@login.login_required
+def preview_deep_web():
+    return templating.deep_web_template()
+
+
+
 @blueprint.route('/<int:user_id>/<username>/printer/<int:printer_id>/preview', methods=['POST'])
 @login.login_required
 def preview(user_id, username, printer_id):
